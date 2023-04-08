@@ -1,4 +1,5 @@
 ﻿using BookStore.Models.Repository;
+using BookStore.ViewModels;
 using library.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ namespace BookStore.Controllers
     public class BookController : Controller
     {
         private readonly IBookStoreRepositry<Book> bookRepository;
+        private readonly IBookStoreRepositry<Author> author;
 
-        public BookController(IBookStoreRepositry<Book> bookRepositry)
+        public BookController(IBookStoreRepositry<Book> bookRepositry,IBookStoreRepositry<Author> author)
         {
             this.bookRepository = bookRepositry;
+            this.author = author;
         }
 
         // GET: BookController
@@ -31,16 +34,30 @@ namespace BookStore.Controllers
         // GET: BookController/Create
         public ActionResult Create()
         {
-            return View();
+            var model = new BookAuthorViewModel
+            {
+                Author = author.List().ToList()
+            };
+
+            return View(model);
         }
 
         // POST: BookController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(BookAuthorViewModel model)
         {
             try
             {
+                var _Author= author.Find(model.AuthorId);
+                Book book = new Book
+                {
+                    Id = model.BookId,
+                    Title = model.Title,
+                    description = model.Description,
+                    Author = _Author,
+                };
+                bookRepository.Add(book);
                 return RedirectToAction(nameof(Index));
             }
             catch
