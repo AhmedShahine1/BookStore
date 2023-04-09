@@ -11,19 +11,19 @@ namespace BookStore.Models.Repository
             {
                 new Book()
                 {
-                    Id = 1,Title="C# Programming", description="No Description"
+                    Id = 1,Title="C# Programming", description="No Description", Author=new Author{Id=1}
                 },
                 new Book()
                 {
-                    Id=2,Title="C++ Programming", description="No Description"
+                    Id=2,Title="C++ Programming", description="No Description",Author=new Author{Id=2}
                 },
                 new Book()
                 {
-                    Id=3,Title="Python Programming", description="No Description"
+                    Id=3,Title="Python Programming", description="No Description",Author = new Author{Id=3}
                 },
                 new Book()
                 {
-                    Id=4,Title="Java Programming", description="No Description"
+                    Id=4,Title="Java Programming", description="No Description",Author=new Author{Id=1}
                 }
             };
         }
