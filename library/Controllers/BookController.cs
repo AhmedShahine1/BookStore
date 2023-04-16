@@ -50,10 +50,14 @@ namespace BookStore.Controllers
         {
             try
             {
-                if(model.AuthorId != -1)
+                if(model.AuthorId == -1)
                 {
                     ViewBag.Message = "Please select an author from list";
-                    return View(model);
+                    var vmodel =new BookAuthorViewModel 
+                    {
+                        Author=listAuthor() 
+                    };   
+                    return View(vmodel);
                 }
                 var _Author = author.Find(model.AuthorId);
                 Book book = new Book
