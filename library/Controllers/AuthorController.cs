@@ -40,22 +40,13 @@ namespace BookStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Author author)
         {
-            if (ModelState.IsValid) 
+            try
             {
-                try
-                {
-                    authorRepository.Add(author);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    return View();
-                }
-
+                authorRepository.Add(author);
+                return RedirectToAction(nameof(Index));
             }
-            else
+            catch
             {
-                ModelState.AddModelError("", "You have to fill all the required fields!");
                 return View();
             }
         }

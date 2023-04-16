@@ -48,34 +48,32 @@ namespace BookStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(BookAuthorViewModel model)
         {
-            if(ModelState.IsValid)
+            try
             {
-                try
+                if(model.AuthorId == -1)
                 {
-                    if (model.AuthorId == -1)
+                    ViewBag.Message = "Please select an author from list";
+                    var vmodel =new BookAuthorViewModel 
                     {
-                        ViewBag.Message = "Please select an author from list";
-
-                        return View(GetAllAuthors());
-                    }
-                    var _Author = author.Find(model.AuthorId);
-                    Book book = new Book
-                    {
-                        Id = model.BookId,
-                        Title = model.Title,
-                        description = model.Description,
-                        Author = _Author,
-                    };
-                    bookRepository.Add(book);
-                    return RedirectToAction(nameof(Index));
+                        Author=listAuthor() 
+                    };   
+                    return View(vmodel);
                 }
-                catch
+                var _Author = author.Find(model.AuthorId);
+                Book book = new Book
                 {
-                    return View();
-                }
+                    Id = model.BookId,
+                    Title = model.Title,
+                    description = model.Description,
+                    Author = _Author,
+                };
+                bookRepository.Add(book);
+                return RedirectToAction(nameof(Index));
             }
-            ModelState.AddModelError("", "You have to fill all the required fields!");
-            return View(GetAllAuthors());
+            catch
+            {
+                return View();
+            }
         }
 
         // GET: BookController/Edit/5
@@ -145,14 +143,6 @@ namespace BookStore.Controllers
             Authors.Insert(0, new Author { Id = -1,Name="Please select an author" });
             return Authors;
         } 
-        BookAuthorViewModel GetAllAuthors()
-        {
-            var vmodel = new BookAuthorViewModel
-            {
-                Author = listAuthor()
-            };
-            return vmodel;
-        }
     }
 }
 
