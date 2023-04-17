@@ -8,6 +8,8 @@
 
         public string description { get; set; }
 
+        public string imageUrl { get; set; }
+
         public Author Author { get; set; }
     }
 }
