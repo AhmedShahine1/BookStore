@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace BookStore.Controllers
 {
@@ -12,11 +13,13 @@ namespace BookStore.Controllers
     {
         private readonly IBookStoreRepositry<Book> bookRepository;
         private readonly IBookStoreRepositry<Author> author;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-        public BookController(IBookStoreRepositry<Book> bookRepositry, IBookStoreRepositry<Author> author)
+        public BookController(IBookStoreRepositry<Book> bookRepositry, IBookStoreRepositry<Author> author,IHostingEnvironment hostingEnvironment)
         {
             this.bookRepository = bookRepositry;
             this.author = author;
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         // GET: BookController
@@ -52,6 +55,14 @@ namespace BookStore.Controllers
             {
                 try
             {
+                    string fileName = string.Empty;
+                    if(model.file != null) 
+                    {
+                        string upload = Path.Combine(hostingEnvironment.WebRootPath, "uploads");
+                        fileName = model.file.FileName;
+                        string fullPath = Path.Combine(upload, fileName);
+                        model.file.CopyTo(new FileStream(fullPath, FileMode.Create));
+                    }
                     if (model.AuthorId == -1)
                     {
                         ViewBag.Message = "Please select an author from list";
@@ -65,6 +76,7 @@ namespace BookStore.Controllers
                         Title = model.Title,
                         description = model.Description,
                         Author = _Author,
+                        ImageUrl=fileName
                     };
                     bookRepository.Add(book);
                     return RedirectToAction(nameof(Index));
